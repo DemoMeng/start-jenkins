@@ -2,21 +2,66 @@
 
 #利用Jenkins平台构建maven项目, 并且打包成docker镜像, 上传到阿里云镜像仓库
 
-# 安装Jenkins
-    - 1.使用docker安装：
-        * docker对Jenkins版本支持没有更新，导致安装Jenkins插件的时候会有问题
-        * 挂载的Jenkins_home目录没权限的问题
-        
-    - 2.采用下载 jenkins.war的方式：
-        * a.下载Jenkins.war包
-        * b.执行启动的脚本： nohup java -jar jenkins.war
+# docker启动Jenkins
+     - 请先预装好docker环境、docker-compose环境
+     - 1.使用docker镜像启动： jenkins-docker-compose.yml
+
+            version: "3.7"
+            services:
+            jenkines-1:
+            hostname: jenkines-1
+            image: docker.io/jenkins:latest
+            container_name: jenkins-container-1
+            volumes:
+            - /home/mqz/jenkins-docker/:/var/jenkins_home
+            - /var/run/docker.sock:/var/run/docker.sock
+            #- /usr/bin/docker:/usr/bin/docker
+            #- /usr/lib/x86_64-linux-gnu/libltdl.so.7:/usr/lib/x86_64-linux-gnu/libltdl.so.7
+            ports:
+            - "8080:8080"
+            - "50000:50000"
+            #    networks:
+            #      - nacos_net
+                restart: always
+                privileged: true
+            #networks:
+            #  nacos_net:
+            #    external: true
+
+    - 2. 构建并且启动docker容器： 具体的docker命令可参考项目  nacos-consumer-a （spring-cloud-alibaba那一块）
+        docker-compose -f jenkins-docker-compose.yml up -d 
+
+   
+    - 3. 注意：
+           #问题： touch: cannot touch ‘/var/jenkins_home/copy_reference_file.log’: Permission denied
+           Can not write to /var/jenkins_home/copy_reference_file.log. Wrong volume permissions?
+         
+                 #原因：jenkins容器的当前用户:是jenkins而且/var/jenkins_home目录是属于jenkins用户拥有的而当映射本地数据卷时，
+                       /var/jenkins_home目录的拥有者变成了root用户，所以当jenkins用户的进程访问/var/jenkins_home目录时，会出现 Permission denied
+                 
+                 #解决命令：sudo chown -R 1000 /home/mqz/jenkins-docker
+                 
+           #docker 启动的jenkins可能会在install plugins（安装jenkins插件）的时候失败，因为docker对jenkins的版本支持还是之前的旧版导致的。
+           * docker对Jenkins版本支持没有更新，导致安装Jenkins插件的时候会有问题
+           * 挂载的Jenkins_home目录没权限的问题
+           * 建议使用下载war包方式
+
+# war启动Jenkins   
+
+    - 采用下载 jenkins.war的方式：
+        * a.下载Jenkins.war包，下载官网：https://www.jenkins.io/zh/download/ 
+
+        * b.执行启动的脚本： nohup java -jar jenkins.war &
         
 # 导入外部下载的插件：
      - 1 /jenkins-maven打包插件/maven-plugin.hpi
      
 # 配置打包完成后执行的脚本
-
-
+   - 1.上传文件：建议使用expect 上传
+   - 2.重启服务，建议使用jenkins 的 public-over-ssh插件，
+      * 安装jenkins的 public-over-ssh插件
+      * 编写远程的重启脚本
+      * 在jenkins中配置sh /usr/local/start.sh 脚本
 
 # 配置Jenkins的public over ssh
 
