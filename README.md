@@ -65,6 +65,14 @@
 
 # 配置Jenkins的public over ssh
 
+   - 需要配置被登陆服务器的访问，当前jenkins所在服务器的公钥配置到被登陆服务器中
+   - ssh-keygen ： 生成私、公钥匙 ，在jenkins所在服务器执行即可
+      会提示输入passphrase，这个记住后面使用expect的时候需要使用到（公钥登陆凭证）
+   - 配置被登陆服务器的authorized_keys，加入jenkins所在服务器的公钥：
+      cat id_rsa.pub >> authorized_keys
+![公钥配置](./images/公钥配置.png)     
+
+
 ![配置jenkins的publish-over-ssh](images/配置Jenkins的Publish-over-SSH插件.jpg)
 
 #配置jenkins项目
