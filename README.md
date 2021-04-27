@@ -98,12 +98,13 @@
    set timeout         设置超时时间
 
     
-
- 
- 
-
-
-
-
-
-    
+# jenkins读取不到环境变量
+    - jenkins中构建后 Execute Shell异常：
+        Neither the JAVA_HOME nor the JRE_HOME environment variable is defined At least one of these environment variable is needed to run this program
+    - 网上说在tomcat的bin下的 setclasspath.sh 和 catalina.sh均加上jdk和jre环境变量：
+        set JAVA_HOME=/usr/local/java
+        set JRE_HOME=/usr/local/java/jre
+      亲测无效
+    - 解决办法：
+        另写一个脚本脚本内容为执行tomcat启动脚本，该新建的脚本可以读取到全局变量
+![jenkins读取不到环境变量](./images/jenkins读取不到环境变量.png)
