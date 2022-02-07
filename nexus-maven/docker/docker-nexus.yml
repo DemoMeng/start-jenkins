@@ -1,9 +1,10 @@
 version: "3.3"
 services:
-  es:
+  nexus:
     image: sonatype/nexus3
     container_name: nexus3-by-mqz
-    #environment:
+    environment:
+       - TZ=Asia/Shanghai
     #  - discovery.type=single-node
     #  - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     volumes:
