@@ -43,6 +43,10 @@
    set                 定义变量
    puts                输出变量
    set timeout         设置超时时间
+   
+
+# 使用publishOverSSH可以避免写expect脚本
+- 参考博客 jenkins 部分
 
     
 
