@@ -1,0 +1,19 @@
+version: "3.3"
+services:
+  nexus:
+    image: sonatype/nexus3
+    container_name: nexus3-by-mqz
+    environment:
+       - TZ=Asia/Shanghai
+    #  - discovery.type=single-node
+    #  - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - /logs/nexus/nexus-data:/nexus-data
+    ports:
+      - "8081:8081"
+    #    networks:
+    #      - elastic
+    privileged: true
+#networks:
+#  elastic:
+#    driver: bridge
